@@ -97,14 +97,22 @@ public class MainActivity extends AppCompatActivity
                             // определяем номера столбцов по имени в выборке
                             int idColIndex = c.getColumnIndex("id");
                             int nameColIndex = c.getColumnIndex("name");
-                            int emailColIndex = c.getColumnIndex("weekday");
+                            int weekdayColIndex = c.getColumnIndex("weekday");
+                            int groupColIndex = c.getColumnIndex("group");
+                            int audienceColIndex = c.getColumnIndex("audience");
+                            int oddOrEvenOrNotColIndex = c.getColumnIndex("oddOrEvenOrNot");
+                            int teacherColIndex = c.getColumnIndex("teacher");
 
                             do {
                                 // получаем значения по номерам столбцов и пишем все в лог
                                 Log.d(LOG_TAG,
                                         "ID = " + c.getInt(idColIndex) +
                                                 ", name = " + c.getString(nameColIndex) +
-                                                ", weekday = " + c.getString(emailColIndex));
+                                                ", weekday = " + c.getString(weekdayColIndex)+
+                                                ", group = " + c.getString(groupColIndex) +
+                                                ", audience = " + c.getString(audienceColIndex) +
+                                                ", oddOrEvenOrNot = " + c.getString(oddOrEvenOrNotColIndex) +
+                                                ", teacher = " + c.getString(teacherColIndex));
                                 // переход на следующую строку
                                 // а если следующей нет (текущая - последняя), то false - выходим из цикла
                             } while (c.moveToNext());
