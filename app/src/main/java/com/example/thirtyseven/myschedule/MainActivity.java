@@ -1,12 +1,14 @@
 package com.example.thirtyseven.myschedule;
 
+import android.support.v4.app.FragmentManager;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,167 +20,37 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     final String LOG_TAG = "myLogs";
+    final String ID_TAG = "_id";
+    final String NAME_TAG = "name";
+    final String WEEKDAY_TAG = "weekday";
+    final String TIME_TAG = "time";
+    final String GROUP_TAG = "myGroup";
+    final String AUDIENCE_TAG = "audience";
+    final String ODD_OR_EVEN_OR_NOT_TAG = "oddOrEvenOrNot";
+    final String TEACHER_TAG = "teacher";
 
-    Button btnAdd, btnRead, btnClear;
-    EditText etName, etWeekday, etTime, etTeacher, etAudience, etGroup;
-
-    RadioButton not, even, odd;
-
-    Schedule dbHelper;
-
-    int oddOrEvenOrNot, group, time, id;
-    String name, weekday, audience, teacher;
-
-    View.OnClickListener onClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         standart();
-
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-// создаем объект для данных
-                ContentValues cv = new ContentValues();
-
-                // получаем данные из полей ввода
-                name = etName.getText().toString();
-                weekday = etWeekday.getText().toString();
-                time = Integer.parseInt(etTime.getText().toString());
-                audience = etAudience.getText().toString();
-                group = Integer.parseInt(etGroup.getText().toString());
-                teacher = etTeacher.getText().toString();
-                if(not.isChecked())
-                    oddOrEvenOrNot = 0;
-                else if (even.isChecked()) oddOrEvenOrNot = 1;
-                else if(odd.isChecked())oddOrEvenOrNot = 2;
-
-
-                // подключаемся к БД
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-
-                switch (v.getId()) {
-                    case R.id.btnAdd:
-                        Log.d(LOG_TAG, "--- Insert in mytable: ---");
-                        // подготовим данные для вставки в виде пар: наименование столбца - значение
-
-                        cv.put("name", name);
-                        cv.put("weekday", weekday);
-                        cv.put("audience", audience);
-                        cv.put("group", group);
-                        cv.put("oddOrEvenOrNot", oddOrEvenOrNot);
-                        cv.put("teacher", teacher);
-                        // вставляем запись и получаем ее ID
-                        long rowID = db.insert("mytable", null, cv);
-                        Log.d(LOG_TAG, "row inserted, ID = " + rowID);
-                        break;
-
-                    case R.id.btnRead:
-                        Log.d(LOG_TAG, "--- Rows in mytable: ---");
-                        // делаем запрос всех данных из таблицы mytable, получаем Cursor
-                        Cursor c = db.query("mytable", null, null, null, null, null, null);
-
-                        // ставим позицию курсора на первую строку выборки
-                        // если в выборке нет строк, вернется false
-                        if (c.moveToFirst()) {
-
-                            // определяем номера столбцов по имени в выборке
-                            int idColIndex = c.getColumnIndex("id");
-                            int nameColIndex = c.getColumnIndex("name");
-                            int weekdayColIndex = c.getColumnIndex("weekday");
-                            int groupColIndex = c.getColumnIndex("group");
-                            int audienceColIndex = c.getColumnIndex("audience");
-                            int oddOrEvenOrNotColIndex = c.getColumnIndex("oddOrEvenOrNot");
-                            int teacherColIndex = c.getColumnIndex("teacher");
-
-                            do {
-                                // получаем значения по номерам столбцов и пишем все в лог
-                                Log.d(LOG_TAG,
-                                        "ID = " + c.getInt(idColIndex) +
-                                                ", name = " + c.getString(nameColIndex) +
-                                                ", weekday = " + c.getString(weekdayColIndex)+
-                                                ", group = " + c.getString(groupColIndex) +
-                                                ", audience = " + c.getString(audienceColIndex) +
-                                                ", oddOrEvenOrNot = " + c.getString(oddOrEvenOrNotColIndex) +
-                                                ", teacher = " + c.getString(teacherColIndex));
-                                // переход на следующую строку
-                                // а если следующей нет (текущая - последняя), то false - выходим из цикла
-                            } while (c.moveToNext());
-                        } else
-                            Log.d(LOG_TAG, "0 rows");
-                        c.close();
-                        break;
-
-                    case R.id.btnClear:
-                        Log.d(LOG_TAG, "--- Clear mytable: ---");
-                        // удаляем все записи
-                        int clearCount = db.delete("mytable", null, null);
-                        Log.d(LOG_TAG, "deleted rows count = " + clearCount);
-                        break;
-                }
-                // закрываем подключение к БД
-                dbHelper.close();
-            }
-        };
-
-        RadioGroup.OnCheckedChangeListener onCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                switch (checkedId){
-                    case R.id.not:
-                        even.setChecked(false);
-                        odd.setChecked(false);
-                        break;
-                    case R.id.even:
-                        not.setChecked(false);
-                        odd.setChecked(false);
-                        break;
-                    case R.id.odd:
-                        even.setChecked(false);
-                        not.setChecked(false);
-                        break;
-
-                }
-            }
-        };
-
-        btnAdd = (Button) findViewById(R.id.btnAdd);
-        btnAdd.setOnClickListener(onClickListener);
-
-        btnRead = (Button) findViewById(R.id.btnRead);
-        btnRead.setOnClickListener(onClickListener);
-
-        btnClear = (Button) findViewById(R.id.btnClear);
-        btnClear.setOnClickListener(onClickListener);
-
-        etName = (EditText) findViewById(R.id.etName);
-        etWeekday = (EditText) findViewById(R.id.etWeekday);
-        etAudience = (EditText) findViewById(R.id.etAudience);
-        etGroup = (EditText) findViewById(R.id.etGroup);
-        etTeacher = (EditText) findViewById(R.id.etTeacher);
-        etTime = (EditText) findViewById(R.id.etTime);
-
-        not = (RadioButton) findViewById(R.id.not);
-        even = (RadioButton) findViewById(R.id.even);
-        odd = (RadioButton) findViewById(R.id.odd);
-
-        // создаем объект для создания и управления версиями БД
-        dbHelper = new Schedule(this);
+        Fragment fragment = new BlankFragment();
+        /*FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.container,fragment).commit();*/
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.container, fragment).commit();
 
     }
-
 
 
     private void standart() {
@@ -243,10 +115,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        Fragment fragment = new Fragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
+        if (id == R.id.nav_camera) {
+            fragment = new AddLessonFragment();
+        } else if (id == R.id.nav_gallery) {
+            fragment = new BlankFragment();
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -256,6 +131,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         }
+
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
