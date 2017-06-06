@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 /**
  * Created by ThirtySeven on 30.05.2017.
@@ -36,6 +38,7 @@ public class AddLessonFragment extends Fragment {
     EditText etName, etWeekday, etTime, etTeacher, etAudience, etGroup;
 
     RadioButton not, even, odd;
+    RadioGroup radioGroup;
 
     Schedule dbHelper;
 
@@ -43,7 +46,6 @@ public class AddLessonFragment extends Fragment {
     String name, weekday, audience, teacher;
 
     View.OnClickListener onClickListener;
-    CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -77,23 +79,20 @@ public class AddLessonFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-        view = inflater.inflate(R.layout.fragment_add_lesson, container, false);
+        dbHelper = new Schedule(getActivity().getApplicationContext());
+        if (view == null)
+            view = inflater.inflate(R.layout.fragment_add_lesson, container, false);
         init();
+        not.setText("not");
+        even.setText("even");
+        odd.setText("odd");
+        not.setChecked(true);
         setListeners();
         // создаем объект для создания и управления версиями БД
-        dbHelper = new Schedule(getActivity());
 
-        btnAdd.setOnClickListener(onClickListener);
-        btnRead.setOnClickListener(onClickListener);
-        btnClear.setOnClickListener(onClickListener);
 
-        not.setOnCheckedChangeListener(onCheckedChangeListener);
-        even.setOnCheckedChangeListener(onCheckedChangeListener);
-        odd.setOnCheckedChangeListener(onCheckedChangeListener);
 
-        return inflater.inflate(R.layout.fragment_add_lesson, container, false);
+        return view;
     }
 
     private void setListeners() {
@@ -189,35 +188,39 @@ public class AddLessonFragment extends Fragment {
             }
         };
 
-        onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+
+
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                switch (buttonView.getId()) {
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                switch (checkedId){
                     case R.id.not:
-                        even.setChecked(false);
-                        odd.setChecked(false);
+                        oddOrEvenOrNot = 0;
                         break;
                     case R.id.even:
-                        not.setChecked(false);
-                        odd.setChecked(false);
+                        oddOrEvenOrNot = 2;
                         break;
                     case R.id.odd:
-                        even.setChecked(false);
-                        not.setChecked(false);
+                        oddOrEvenOrNot = 1;
                         break;
-
                 }
             }
-        };
+        });
+
+        btnAdd.setOnClickListener(onClickListener);
+        btnRead.setOnClickListener(onClickListener);
+        btnClear.setOnClickListener(onClickListener);
+
     }
 
 
     private void init() {
         btnAdd = (Button) view.findViewById(R.id.btnAdd);
-
         btnRead = (Button) view.findViewById(R.id.btnRead);
-
         btnClear = (Button) view.findViewById(R.id.btnClear);
+
+        radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
 
         etName = (EditText) view.findViewById(R.id.etName);
         etWeekday = (EditText) view.findViewById(R.id.etWeekday);
@@ -254,8 +257,8 @@ public class AddLessonFragment extends Fragment {
         mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
+    /*public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
+    }*/
 }

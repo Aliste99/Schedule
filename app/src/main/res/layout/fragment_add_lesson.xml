@@ -8,7 +8,6 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.thirtyseven.myschedule.AddLessonFragment">
 
-
     <LinearLayout
         android:id="@+id/groupLayout"
         android:layout_width="match_parent"
@@ -145,23 +144,34 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/not"
+        <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:layout_height="match_parent">
 
-        <RadioButton
-            android:id="@+id/even"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            <RadioButton
+                android:id="@+id/not"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="RadioButton" />
 
-        <RadioButton
-            android:id="@+id/odd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            <RadioButton
+                android:id="@+id/odd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="RadioButton" />
+
+            <RadioButton
+                android:id="@+id/even"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="RadioButton" />
+
+        </RadioGroup>
+
     </LinearLayout>
 
     <LinearLayout

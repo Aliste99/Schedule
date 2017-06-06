@@ -1,20 +1,22 @@
 package com.example.thirtyseven.myschedule;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 public class BlankFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    Spinner day;
+    View myView;
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -23,7 +25,7 @@ public class BlankFragment extends Fragment {
     public BlankFragment() {
         // Required empty public constructor
     }
-    // TODO: Rename and change types and number of parameters
+
     public static BlankFragment newInstance(String param1, String param2) {
         BlankFragment fragment = new BlankFragment();
         Bundle args = new Bundle();
@@ -45,11 +47,26 @@ public class BlankFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_blank, container, false);
+
+        if (myView == null) {
+            myView = inflater.inflate(R.layout.fragment_blank, container, false);
+        }
+
+        init();
+
+        ArrayAdapter<?> dayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.day, android.R.layout.simple_spinner_item);
+        dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        if (day != null)
+            day.setAdapter(dayAdapter);
+
+        return myView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    private void init() {
+        day = (Spinner) myView.findViewById(R.id.day_spinner);
+    }
+
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);

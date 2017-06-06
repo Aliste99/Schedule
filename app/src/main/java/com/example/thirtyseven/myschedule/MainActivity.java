@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,16 +113,16 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle navigation myView item clicks here.
         int id = item.getItemId();
 
         Fragment fragment = new Fragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (id == R.id.nav_camera) {
-            fragment = new AddLessonFragment();
-        } else if (id == R.id.nav_gallery) {
             fragment = new BlankFragment();
+        } else if (id == R.id.nav_gallery) {
+            fragment = new AddLessonFragment();
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
