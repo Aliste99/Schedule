@@ -3,7 +3,6 @@ package com.example.thirtyseven.myschedule;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.util.Log;
@@ -12,14 +11,9 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
-/**
- * Created by ThirtySeven on 30.05.2017.
- */
 
 public class AddLessonFragment extends Fragment {
 
@@ -53,13 +47,13 @@ public class AddLessonFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private BlankFragment.OnFragmentInteractionListener mListener;
+    private ScheduleFragment.OnFragmentInteractionListener mListener;
 
     public AddLessonFragment() {
     }
 
-    public static BlankFragment newInstance(String param1, String param2) {
-        BlankFragment fragment = new BlankFragment();
+    public static ScheduleFragment newInstance(String param1, String param2) {
+        ScheduleFragment fragment = new ScheduleFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -99,7 +93,7 @@ public class AddLessonFragment extends Fragment {
         onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-// создаем объект для данных
+                // создаем объект для данных
                 ContentValues cv = new ContentValues();
 
                 // получаем данные из полей ввода
@@ -234,31 +228,10 @@ public class AddLessonFragment extends Fragment {
         odd = (RadioButton) view.findViewById(R.id.odd);
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    /*@Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }*/
-
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-    /*public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }*/
 }

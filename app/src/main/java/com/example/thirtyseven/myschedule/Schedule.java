@@ -6,10 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-/**
- * Created by ThirtySeven on 29.05.2017.
- */
-
 public class Schedule extends SQLiteOpenHelper {
 
     final String LOG_TAG = "myLogs";
