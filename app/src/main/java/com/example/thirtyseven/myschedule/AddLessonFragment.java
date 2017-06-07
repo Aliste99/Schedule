@@ -95,9 +95,6 @@ public class AddLessonFragment extends Fragment {
             public void onClick(View v) {
                 // создаем объект для данных
                 ContentValues cv = new ContentValues();
-
-                // получаем данные из полей ввода
-
                 // подключаемся к БД
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
