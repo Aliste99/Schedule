@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
 public class AddLessonFragment extends Fragment {
 
@@ -29,12 +31,15 @@ public class AddLessonFragment extends Fragment {
     View view;
 
     Button btnAdd, btnRead, btnClear;
-    EditText etName, etWeekday, etTime, etTeacher, etAudience, etGroup;
+    EditText etName, etTime, etTeacher, etAudience, etGroup;
+    Spinner etWeekday;
 
     RadioButton not, even, odd;
     RadioGroup radioGroup;
 
     Schedule dbHelper;
+
+    DayHelper dayHelper;
 
     int oddOrEvenOrNot, myGroup, time;
     String name, weekday, audience, teacher;
@@ -103,7 +108,7 @@ public class AddLessonFragment extends Fragment {
                     case R.id.btnAdd:
 
                         name = etName.getText().toString();
-                        weekday = etWeekday.getText().toString();
+                        weekday = String.valueOf(etWeekday.getSelectedItemPosition());
                         time = Integer.parseInt(etTime.getText().toString());
                         audience = etAudience.getText().toString();
                         myGroup = Integer.parseInt(etGroup.getText().toString());
@@ -207,6 +212,9 @@ public class AddLessonFragment extends Fragment {
 
 
     private void init() {
+        ArrayAdapter<?> dayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.day, android.R.layout.simple_spinner_item);
+        dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         btnAdd = (Button) view.findViewById(R.id.btnAdd);
         btnRead = (Button) view.findViewById(R.id.btnRead);
         btnClear = (Button) view.findViewById(R.id.btnClear);
@@ -214,7 +222,7 @@ public class AddLessonFragment extends Fragment {
         radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
 
         etName = (EditText) view.findViewById(R.id.etName);
-        etWeekday = (EditText) view.findViewById(R.id.etWeekday);
+        etWeekday = (Spinner) view.findViewById(R.id.etWeekday);
         etAudience = (EditText) view.findViewById(R.id.etAudience);
         etGroup = (EditText) view.findViewById(R.id.etGroup);
         etTeacher = (EditText) view.findViewById(R.id.etTeacher);
@@ -223,6 +231,8 @@ public class AddLessonFragment extends Fragment {
         not = (RadioButton) view.findViewById(R.id.not);
         even = (RadioButton) view.findViewById(R.id.even);
         odd = (RadioButton) view.findViewById(R.id.odd);
+
+        etWeekday.setAdapter(dayAdapter);
     }
 
     @Override

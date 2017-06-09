@@ -29,7 +29,8 @@ public class ScheduleFragment extends Fragment {
     final String TEACHER_TAG = "teacher";
 
     Spinner day, group;
-    String[] dayStr;
+    String [] dayArr;
+    String dayStr, groupStr;
     View myView;
     ArrayList<String> groupArray = new ArrayList<>();
     Schedule dbHelper;
@@ -73,15 +74,7 @@ public class ScheduleFragment extends Fragment {
         dbHelper = new Schedule(getActivity().getApplicationContext());
         init();
         fillArray();
-        setListeners();
-        ArrayAdapter<?> dayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.day, android.R.layout.simple_spinner_item);
-        dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ArrayAdapter<String> groupAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groupArray);
-        groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        group.setAdapter(groupAdapter);
-        if (day != null)
-            day.setAdapter(dayAdapter);
-
+        setListenersAndAdapters();
 
         return myView;
     }
@@ -114,16 +107,17 @@ public class ScheduleFragment extends Fragment {
                         if (c.getString(groupColIndex).equals(s)) break;
                         else groupArray.add(c.getString(groupColIndex));
                     }
-                }else groupArray.add(c.getString(groupColIndex));
+                } else groupArray.add(c.getString(groupColIndex));
             } while (c.moveToNext());
         }
     }
 
-    private void setListeners() {
+    private void setListenersAndAdapters() {
         day.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                dayStr = getResources().getStringArray(R.array.day);
+                dayStr = String.valueOf(position);
+                refreshList(dayStr, groupStr);
             }
 
             @Override
@@ -131,9 +125,57 @@ public class ScheduleFragment extends Fragment {
 
             }
         });
+
+        ArrayAdapter<?> dayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.day, android.R.layout.simple_spinner_item);
+        dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        ArrayAdapter<String> groupAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groupArray);
+        groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        group.setAdapter(groupAdapter);
+        day.setAdapter(dayAdapter);
+    }
+
+    private void refreshList(String dayStr, String groupStr) {
+        // подключаемся к БД
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        // делаем запрос всех данных из таблицы schedule, получаем Cursor
+        Cursor c = db.query("schedule", null, null, null, null, null, null);
+
+        // ставим позицию курсора на первую строку выборки
+        // если в выборке нет строк, вернется false
+        if (c.moveToFirst()) {
+
+            // определяем номера столбцов по имени в выборке
+            int idColIndex = c.getColumnIndex(ID_TAG);
+            int nameColIndex = c.getColumnIndex(NAME_TAG);
+            int weekdayColIndex = c.getColumnIndex(WEEKDAY_TAG);
+            int timeColIndex = c.getColumnIndex(TIME_TAG);
+            int groupColIndex = c.getColumnIndex(GROUP_TAG);
+            int audienceColIndex = c.getColumnIndex(AUDIENCE_TAG);
+            int oddOrEvenOrNotColIndex = c.getColumnIndex(ODD_OR_EVEN_OR_NOT_TAG);
+            int teacherColIndex = c.getColumnIndex(TEACHER_TAG);
+
+            do {
+                if (c.getString(weekdayColIndex).equals(dayStr) && c.getString(groupColIndex).equals(groupStr)){
+                    Log.d(LOG_TAG,
+                            "ID = " + c.getInt(idColIndex) +
+                                    ", " + NAME_TAG + " = " + c.getString(nameColIndex) +
+                                    ", " + WEEKDAY_TAG + " = " + c.getString(weekdayColIndex) +
+                                    ", " + TIME_TAG + " = " + c.getString(timeColIndex) +
+                                    ", " + GROUP_TAG + " = " + c.getString(groupColIndex) +
+                                    ", " + AUDIENCE_TAG + " = " + c.getString(audienceColIndex) +
+                                    ", " + ODD_OR_EVEN_OR_NOT_TAG + " = " + c.getString(oddOrEvenOrNotColIndex) +
+                                    ", " + TEACHER_TAG + " = " + c.getString(teacherColIndex));
+                }
+            } while (c.moveToNext());
+        }
     }
 
     private void init() {
+        dayArr = getResources().getStringArray(R.array.day);
+        dayStr = "0";
+        groupStr = "510";
         day = (Spinner) myView.findViewById(R.id.day_spinner);
         group = (Spinner) myView.findViewById(R.id.group_spinner);
     }
